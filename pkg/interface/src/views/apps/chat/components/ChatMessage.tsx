@@ -16,6 +16,7 @@ import { Sigil } from '~/logic/lib/sigil';
 import { citeNickname, daToUnix, useHovering, uxToHex } from '~/logic/lib/util';
 import { useContact } from '~/logic/state/contact';
 import { useDark } from '~/logic/state/join';
+import usePalsState from '~/logic/state/pals';
 import useSettingsState, { selectCalmState, useShowNickname } from '~/logic/state/settings';
 import ProfileOverlay from '~/views/components/ProfileOverlay';
 import { GraphContent } from '~/views/landscape/components/Graph/GraphContent';
@@ -61,6 +62,8 @@ export const MessageAuthor = React.memo<any>(({
   ...props
 }) => {
   const dark = useDark();
+  const { pals } = usePalsState();
+  const isPal = Boolean(pals.outgoing[msg.author]);
   let contact: Contact | null = useContact(`~${msg.author}`);
 
   const date = daToUnix(bigInt(msg.index.split('/').reverse()[0]));
@@ -156,6 +159,7 @@ export const MessageAuthor = React.memo<any>(({
                 >
                   {shipName}
                 </Text>
+                {isPal && <Icon icon="Users" size={12} ml={2} mt="3px" />}
               </Row>
             </ProfileOverlay>
           </Box>
@@ -168,6 +172,7 @@ export const MessageAuthor = React.memo<any>(({
             whiteSpace='nowrap'
             gray
             ml={2}
+            mt="5px"
             display={['none', hovering ? 'block' : 'none']}
           >
             {datestamp}
@@ -318,8 +323,8 @@ const MessageWrapper = (props) => {
       {...bind}
     >
       {props.children}
-      <LikeIndicator {...{ transcluded, isLiked, didLike, dark, likers, showLikers: IS_MOBILE && hovering }} onLike={() => likeMessage(msg)} />
-      {showHover ? <MessageActions {...{ ...props, onLike: likeMessage }} /> : null}
+      {onLike && <LikeIndicator {...{ transcluded, isLiked, didLike, dark, likers, showLikers: IS_MOBILE && hovering }} onLike={() => likeMessage(msg)} />}
+      {showHover ? <MessageActions {...{ ...props, onLike: onLike && likeMessage }} /> : null}
     </Box>
   );
 };

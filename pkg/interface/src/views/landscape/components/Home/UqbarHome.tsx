@@ -8,10 +8,12 @@ import { ScrollbarLessBox } from '~/views/apps/launch/App';
 import useHarkState from "~/logic/state/hark";
 import { NewBox } from '~/views/apps/notifications/NewBox';
 import { version } from '~/../package.json';
+import usePalsState from '~/logic/state/pals';
 
 export function UqbarHome(props) {
   const history = useHistory();
   const { notificationsCount } = useHarkState();
+  const { pending } = usePalsState();
 
   return (
     <ScrollbarLessBox
@@ -22,7 +24,7 @@ export function UqbarHome(props) {
       mt={3}
     >
       <H2 mb={3} ml={3}>EScape from Eternal September <Text fontSize="16px">(v{version})</Text></H2>
-      {notificationsCount === 0 && <Text ml={3}>No notifications</Text>}
+      {(notificationsCount === 0/* && pending.length === 0*/) && <Text ml={3}>No notifications</Text>}
       <NewBox hideLabel />
       <Box
         mx={2}
