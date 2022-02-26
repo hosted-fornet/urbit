@@ -246,7 +246,7 @@
     =/  index=path  (slag 3 link)
     ?+    (slav %tas -.link)  !!  ::  TODO: is crashing appropriate?
         %graph-validator-dm
-      =/  sender=@p  `@p`(rash `@t`(snag 3 link) dem:ag)  ::  TODO: if no `.`s in decimal, use `dim:ag`
+      =/  sender=@p  `@p`(rash `@t`(snag 3 link) dim:ag)  ::  TODO: if `.`s in decimal, use `dem:ag`
       (rap 3 '/~landscape/messages/dm/' (scot %p sender) ~)
       ::
         %graph-validator-chat
