@@ -226,6 +226,7 @@
   |=  link=path
   ^-  @t
   |^
+  ~&  >  "push-notify: get-notification-redirect link: {<link>}"
   ?+    (slav %tas -.link)  (get-graph-redirect link)
       %invite
     (get-invite-redirect link)
@@ -241,6 +242,7 @@
     |=  link=path
     ^-  @t
     |^
+    ~&  >  "push-notify: get-graph-redirect"
     =/  rid=resource:res
       (cords-to-resource (snag 1 link) (snag 2 link))
     =/  index=path  (slag 3 link)
@@ -265,6 +267,7 @@
     ++  get-chat-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
+      ~&  >  "push-notify: get-chat-redirect rid, index: {<rid>}, {<index>}"
       =/  base=@t  (get-group-resource-redirect rid)
       ?:  (gth 0 (lent index))
         base
@@ -273,6 +276,7 @@
     ++  get-publish-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
+      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}, {<index>}"
       =/  base=@t  (get-group-resource-redirect rid)
       =/  l=@ud  (lent index)
       ?:  =(3 l)
@@ -284,6 +288,7 @@
     ++  get-link-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
+      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}, {<index>}"
       =/  base=@t  (get-group-resource-redirect rid)
       =/  l=@ud  (lent index)
       ?:  =(1 l)
@@ -295,6 +300,7 @@
     ++  get-post-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
+      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}, {<index>}"
       =/  as=(unit association:met)  (scry-graph-metadata rid)
       ?~  as  ''
       =/  group-rid=@t
@@ -304,6 +310,7 @@
     ++  get-group-resource-redirect
       |=  rid=resource:res
       ^-  @t
+      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}"
       =/  as=(unit association:met)  (scry-graph-metadata rid)
       ?~  as  ''
       =/  rid-tape=@t  (resource-to-cord group.u.as)
@@ -318,17 +325,20 @@
   ++  get-invite-redirect
     |=  link=path
     ^-  @t
+    ~&  >  "push-notify: get-invite-redirect"
     '/'
   ::
   ++  get-dm-redirect
     |=  link=path
     ^-  @t
+    ~&  >  "push-notify: get-dm-redirect"
     =/  ship-name=@t  (snag 1 link)
     (rap 3 '/~landscape/messages/dm/' ship-name ~)
   ::
   ++  get-group-redirect
     |=  link=path
     ^-  @t
+    ~&  >  "push-notify: get-group-redirect"
     =/  ship-name=@t  (snag 1 link)
     =/  group-name=@t  (snag 2 link)
     (rap 3 '/~landscape/messages/dm/' ship-name group-name ~)
