@@ -192,10 +192,7 @@
     ::
     ~&  >  "push-notify: preparing request..."
     =/  =header-list:http
-      :~  ['Host' 'exp.host']
-          ['Accept' 'application/json']
-          ['Accept-Encoding' 'gzip,deflate']
-          ['Content-Type' 'application/json']
+      :~  ['Content-Type' 'application/json']
       ==
     =/  note=notification  +.upd
     =/  json-title=@t
@@ -206,27 +203,22 @@
       ?:  ?=(%text -.content)
         +.content
       (scot %p +.content)
-    =/  json-tape=@t  ::  TODO: less hacky
-      %+  rap  3
-      :~  '{"to":"'
-          p.val.data
-          '","title":"'
-          json-title
-          '","data":{"redirect":"'
-          (get-notification-redirect link.body.note)
-          '","ship":"'
-          `@t`(scot %p our.bowl)
-          '"}}'
-      ==
-    ~&  >  "push-notify: body json:"
-    ~&  >  json-tape
-    =/  body=(unit octs)  `[(^met 3 json-tape) json-tape]
     =|  =request:http
      =:  method.request       %'POST'
-         :: url.request          'https://httpbin.org/post'
          url.request          'https://exp.host/--/api/v2/push/send'
          header-list.request  header-list
-         body.request         body
+         body.request
+       :-  ~
+       %-  as-octt:mimes:html
+       %-  en-json:html
+       %-  pairs:enjs:format
+       :~  to+s+p.val.data
+           title+s+json-title
+           :-  %data
+           %-  pairs:enjs:format
+           :~  redirect+s+(get-notification-redirect link.body.note)
+               ship+s+(scot %p our.bowl)
+       ==  ==
     ==
     =/  a=(quip card _state)
       [~[[%pass /push-notification/(scot %da now.bowl) %arvo %i %request request *outbound-config:iris]] state]
