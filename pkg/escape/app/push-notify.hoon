@@ -128,7 +128,9 @@
   ++  on-agent
     |=  [=wire =sign:agent:gall]
     ^-  (quip card _this)
-    ?+  wire  (on-agent:def wire sign)
+    ?+  wire  :: (on-agent:def wire sign)
+          ~&  >  "push-notify: on-agent got {<wire>}: {<sign>}"
+          `this
     ::
     ::  subscription from client to their own hark-store
     ::
@@ -218,7 +220,7 @@
         header-list.request  header-list
         body.request         body
     ==
-    ~&  >  "push-notify: sending request"
+    ~&  >  "push-notify: sending request {<request>}"
     [~[[%pass /push-notification/(scot %da now.bowl) %arvo %i %request request *outbound-config:iris]] state]
   ==
 ::
