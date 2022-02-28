@@ -128,9 +128,7 @@
   ++  on-agent
     |=  [=wire =sign:agent:gall]
     ^-  (quip card _this)
-    ?+  wire  :: (on-agent:def wire sign)
-          ~&  >  "push-notify: on-agent got {<wire>}: {<sign>}"
-          `this
+    ?+  wire  (on-agent:def wire sign)
     ::
     ::  subscription from client to their own hark-store
     ::
@@ -154,7 +152,14 @@
     |=  [=wire =sign-arvo]
     ^-  (quip card _this)
     ?+  wire  (on-arvo:def wire sign-arvo)
-        [%push-notification *]  `this
+        [%push-notification *]
+        ~&  >  "push-notify: response: {<wire>}, {<sign-arvo>}"
+        ?>  ?=(%iris -.sign-arvo)
+        ?>  ?=(%http-response -.+.sign-arvo)
+        ?>  ?=(%finished -.client-response.+.+.sign-arvo)
+        ?>  ?=(^ full-file.client-response.+.+.sign-arvo)
+        ~&  >  `@t`q.data.u.full-file.client-response.+.+.sign-arvo
+        `this
     ==
   ::
   ++  on-fail   on-fail:def
@@ -187,10 +192,10 @@
     ::
     ~&  >  "push-notify: preparing request..."
     =/  =header-list:http
-      :~  ['host' 'exp.host']
-          ['accept' 'application/json']
-          ['accept-encoding' 'gzip, deflate']
-          ['content-type' 'application/json']
+      :~  ['Host' 'exp.host']
+          ['Accept' 'application/json']
+          ['Accept-Encoding' 'gzip,deflate']
+          ['Content-Type' 'application/json']
       ==
     =/  note=notification  +.upd
     =/  json-title=@t
@@ -213,15 +218,20 @@
           `@t`(scot %p our.bowl)
           '"}}'
       ==
-    =/  body=(unit octs)  `(as-octs:mimes:html json-tape)
+    ~&  >  "push-notify: body json:"
+    ~&  >  json-tape
+    =/  body=(unit octs)  `[(^met 3 json-tape) json-tape]
     =|  =request:http
-    =:  method.request       %'POST'  ::  TODO: is it a post?
-        url.request          'https://exp.host/--/api/v2/push/send'
-        header-list.request  header-list
-        body.request         body
+     =:  method.request       %'POST'
+         :: url.request          'https://httpbin.org/post'
+         url.request          'https://exp.host/--/api/v2/push/send'
+         header-list.request  header-list
+         body.request         body
     ==
-    ~&  >  "push-notify: sending request {<request>}"
-    [~[[%pass /push-notification/(scot %da now.bowl) %arvo %i %request request *outbound-config:iris]] state]
+    =/  a=(quip card _state)
+      [~[[%pass /push-notification/(scot %da now.bowl) %arvo %i %request request *outbound-config:iris]] state]
+    ~&  >  "push-notify: sending request {<a>}"
+    a
   ==
 ::
 ++  get-notification-redirect
