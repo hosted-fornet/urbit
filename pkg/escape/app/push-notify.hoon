@@ -289,7 +289,7 @@
       ?~  as  ''
       =/  group-rid=@t
         (resource-to-cord group.u.as)
-      (rap 3 '~/landscape/' group-rid '/feed/thread/' (join '/' index))
+      (rap 3 '/~landscape/' group-rid '/feed/thread/' (join '/' index))
     ::
     ++  get-group-resource-redirect
       |=  rid=resource:res
@@ -302,7 +302,7 @@
           'messages'
         (resource-to-cord group.u.as)
       ?.  ?=(%graph -.config.metadatum.u.as)  ''
-      (rap 3 '~/landscape/' section '/resource/' (scot %tas module.config.metadatum.u.as) '/' rid-tape ~)
+      (rap 3 '/~landscape/' section '/resource/' (scot %tas module.config.metadatum.u.as) '/' rid-tape ~)
     --
   ::
   ++  get-invite-redirect
