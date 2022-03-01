@@ -148,7 +148,13 @@
       ==
     ==
   ::
-  ++  on-arvo   on-arvo:def
+  ++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  ?+  wire  (on-arvo:def wire sign-arvo)
+      [%push-notification *]
+    `this
+  ==
   ::
   ++  on-fail   on-fail:def
   --
