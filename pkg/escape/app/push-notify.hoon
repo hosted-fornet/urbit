@@ -236,7 +236,7 @@
     =/  index=path  (slag 3 link)
     ?+    (slav %tas -.link)  !!  ::  TODO: is crashing appropriate?
         %graph-validator-dm
-      =/  sender=@p  `@p`(rash `@t`(snag 3 link) dim:ag)  ::  TODO: if `.`s in decimal, use `dem:ag`
+      =/  sender=@p  `@p`(rash `@t`(snag 3 link) dim:ag)
       (rap 3 '/~landscape/messages/dm/' (scot %p sender) ~)
       ::
         %graph-validator-chat
@@ -256,7 +256,7 @@
       |=  [rid=resource:res index=path]
       ^-  @t
       =/  base=@t  (get-group-resource-redirect rid)
-      ?:  (gth 0 (lent index))
+      ?:  (gte 0 (lent index))
         base
       (rap 3 base '?msg=' (snag 0 index) ~)
     ::
@@ -288,21 +288,23 @@
       =/  as=(unit association:met)  (scry-graph-metadata rid)
       ?~  as  ''
       =/  group-rid=@t
-        (resource-to-cord group.u.as)
+        (rap 3 'ship/' (resource-to-cord group.u.as) ~)
       (rap 3 '/~landscape/' group-rid '/feed/thread/' (join '/' index))
     ::
     ++  get-group-resource-redirect
-      |=  rid=resource:res
+      |=  graph-rid=resource:res
       ^-  @t
-      =/  as=(unit association:met)  (scry-graph-metadata rid)
+      =/  as=(unit association:met)  (scry-graph-metadata graph-rid)
       ?~  as  ''
-      =/  rid-tape=@t  (resource-to-cord group.u.as)
+      =/  graph-rid-tape=@t
+        (rap 3 'ship/' (resource-to-cord graph-rid) ~)
+      =/  group-rid-tape=@t  (resource-to-cord group.u.as)
       =/  section=@t
-        ?:  =(rid group.u.as)
+        ?:  =(graph-rid group.u.as)
           'messages'
-        (resource-to-cord group.u.as)
+        (rap 3 'ship/' group-rid-tape ~)
       ?.  ?=(%graph -.config.metadatum.u.as)  ''
-      (rap 3 '/~landscape/' section '/resource/' (scot %tas module.config.metadatum.u.as) '/' rid-tape ~)
+      (rap 3 '/~landscape/' section '/resource/' (scot %tas module.config.metadatum.u.as) '/' graph-rid-tape ~)
     --
   ::
   ++  get-invite-redirect
@@ -321,7 +323,7 @@
     ^-  @t
     =/  ship-name=@t  (snag 1 link)
     =/  group-name=@t  (snag 2 link)
-    (rap 3 '/~landscape/messages/dm/' ship-name group-name ~)
+    (rap 3 '/~landscape/ship/' ship-name '/' group-name ~)
   ::
   ++  cords-to-resource
     |=  [ship-cord=@t name-cord=@t]
