@@ -148,19 +148,7 @@
       ==
     ==
   ::
-  ++  on-arvo
-    |=  [=wire =sign-arvo]
-    ^-  (quip card _this)
-    ?+  wire  (on-arvo:def wire sign-arvo)
-        [%push-notification *]
-        ~&  >  "push-notify: response: {<wire>}, {<sign-arvo>}"
-        ?>  ?=(%iris -.sign-arvo)
-        ?>  ?=(%http-response -.+.sign-arvo)
-        ?>  ?=(%finished -.client-response.+.+.sign-arvo)
-        ?>  ?=(^ full-file.client-response.+.+.sign-arvo)
-        ~&  >  `@t`q.data.u.full-file.client-response.+.+.sign-arvo
-        `this
-    ==
+  ++  on-arvo   on-arvo:def
   ::
   ++  on-fail   on-fail:def
   --
@@ -175,22 +163,17 @@
     ::  get token from settings-store
     ::
     ?.  .^(? %gx /(scot %p our.bowl)/settings-store/(scot %da now.bowl)/has-bucket/landscape/escape-app/noun)
-      ~&  >  "push-notify: didn't find bucket"
       `state
     ?.  .^(? %gx /(scot %p our.bowl)/settings-store/(scot %da now.bowl)/has-entry/landscape/escape-app/expo-token/noun)
-      ~&  >  "push-notify: didn't find token"
       `state
     =/  =data:settings
       .^(data:settings %gx /(scot %p our.bowl)/settings-store/(scot %da now.bowl)/entry/landscape/escape-app/expo-token/noun)
     ?.  ?=(%entry -.data)
-      ~&  >  "push-notify: token not of type entry"
       `state
     ?.  ?=(%s -.val.data)
-      ~&  >  "push-notify: token val not of type %s (@t)"
       `state
     ::  send http request
     ::
-    ~&  >  "push-notify: preparing request..."
     =/  =header-list:http
       :~  ['Content-Type' 'application/json']
       ==
@@ -220,17 +203,13 @@
                ship+s+(scot %p our.bowl)
        ==  ==
     ==
-    =/  a=(quip card _state)
-      [~[[%pass /push-notification/(scot %da now.bowl) %arvo %i %request request *outbound-config:iris]] state]
-    ~&  >  "push-notify: sending request {<a>}"
-    a
+    [~[[%pass /push-notification/(scot %da now.bowl) %arvo %i %request request *outbound-config:iris]] state]
   ==
 ::
 ++  get-notification-redirect
   |=  link=path
   ^-  @t
   |^
-  ~&  >  "push-notify: get-notification-redirect link: {<link>}"
   ?+    (slav %tas -.link)  (get-graph-redirect link)
       %invite
     (get-invite-redirect link)
@@ -246,7 +225,6 @@
     |=  link=path
     ^-  @t
     |^
-    ~&  >  "push-notify: get-graph-redirect"
     =/  rid=resource:res
       (cords-to-resource (snag 1 link) (snag 2 link))
     =/  index=path  (slag 3 link)
@@ -271,7 +249,6 @@
     ++  get-chat-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
-      ~&  >  "push-notify: get-chat-redirect rid, index: {<rid>}, {<index>}"
       =/  base=@t  (get-group-resource-redirect rid)
       ?:  (gth 0 (lent index))
         base
@@ -280,7 +257,6 @@
     ++  get-publish-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
-      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}, {<index>}"
       =/  base=@t  (get-group-resource-redirect rid)
       =/  l=@ud  (lent index)
       ?:  =(3 l)
@@ -292,7 +268,6 @@
     ++  get-link-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
-      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}, {<index>}"
       =/  base=@t  (get-group-resource-redirect rid)
       =/  l=@ud  (lent index)
       ?:  =(1 l)
@@ -304,7 +279,6 @@
     ++  get-post-redirect
       |=  [rid=resource:res index=path]
       ^-  @t
-      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}, {<index>}"
       =/  as=(unit association:met)  (scry-graph-metadata rid)
       ?~  as  ''
       =/  group-rid=@t
@@ -314,7 +288,6 @@
     ++  get-group-resource-redirect
       |=  rid=resource:res
       ^-  @t
-      ~&  >  "push-notify: get-publish-redirect rid, index: {<rid>}"
       =/  as=(unit association:met)  (scry-graph-metadata rid)
       ?~  as  ''
       =/  rid-tape=@t  (resource-to-cord group.u.as)
@@ -329,20 +302,17 @@
   ++  get-invite-redirect
     |=  link=path
     ^-  @t
-    ~&  >  "push-notify: get-invite-redirect"
     '/'
   ::
   ++  get-dm-redirect
     |=  link=path
     ^-  @t
-    ~&  >  "push-notify: get-dm-redirect"
     =/  ship-name=@t  (snag 1 link)
     (rap 3 '/~landscape/messages/dm/' ship-name ~)
   ::
   ++  get-group-redirect
     |=  link=path
     ^-  @t
-    ~&  >  "push-notify: get-group-redirect"
     =/  ship-name=@t  (snag 1 link)
     =/  group-name=@t  (snag 2 link)
     (rap 3 '/~landscape/messages/dm/' ship-name group-name ~)
