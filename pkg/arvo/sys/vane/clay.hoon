@@ -1012,8 +1012,13 @@
       %-  mean  %-  flop
       =/  lyn  p.hair
       =/  col  q.hair
+      =/  lyns=wain  (to-wain:format (crip tex))
+      =/  fetch-lyn=@ud
+        =*  prev-lyn  (dec lyn)
+        ?:  (gth (lent lyns) prev-lyn)  prev-lyn
+        (dec (lent lyns))
       :~  leaf+"syntax error at [{<lyn>} {<col>}] in {<pax>}"
-          leaf+(trip (snag (dec lyn) (to-wain:format (crip tex))))
+          leaf+(trip (snag fetch-lyn lyns))
           leaf+(runt [(dec col) '-'] "^")
       ==
     ::
