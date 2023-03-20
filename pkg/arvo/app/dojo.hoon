@@ -68,6 +68,7 @@
           [%ge p=dojo-model]                            ::  generator
           [%te p=[=desk =term] q=(list dojo-source)]    ::  thread
           [%dv p=beak q=path]                           ::  core from source
+          [%xx p=hoon]
           [%ex p=hoon]                                  ::  hoon expression
           [%sa p=mark]                                  ::  example mark value
           [%as p=mark q=dojo-source]                    ::  simple transmute
@@ -446,7 +447,7 @@
       |=  bul=dojo-build
       ^+  [bul +>]
       ?-    -.bul
-        %ex  [bul +>.$]
+        ?(%ex %xx)  [bul +>.$]
         %dv  [bul +>.$]
         %sa  [bul +>.$]
         %as  =^(mor +>.$ (dy-init-source q.bul) [bul(q mor) +>.$])
@@ -746,7 +747,8 @@
     |-  ^-  dy-shown
     ?-  -.bil
       $?(%ur %dv %sa)  bil
-      %ex  ?.  ?=([%cltr *] p.bil)  p.bil
+      $?(%ex %xx)
+            ?.  ?=([%cltr *] p.bil)  p.bil
                |-  ^-  hoon
                ?~  p.p.bil  !!
                ?~  t.p.p.bil  i.p.p.bil
@@ -936,6 +938,20 @@
         [%spider-start !>([~ `tid he-beak(q.dir desk) term (dy-some src)])]
       [%pass /wool %agent [our.hid %spider] %poke cage]
     ::
+    ++  dy-mere-self-poke
+      ^+  +>
+      ~&  %dojo^%dy-mere-self-poke
+      ?<  ?=(%brev -.mad)
+      ?>  ?=(%ex -.q.q.mad)
+      ?>  ?=(~ pux)
+      =.  poy
+        ?>  ?=(^ poy)
+        `u.poy(pux `/mere)
+      %-  he-card
+      :+  %pass  /mere
+      :^  %agent  [our dap]:hid  %poke
+      [%execute-hoon !>([id mad(-.q.q %xx)])]
+    ::
     ++  dy-make                                         ::  build step
       ^+  +>
       ?>  ?=(^ cud)
@@ -943,7 +959,8 @@
       ?-    -.bil
           %ur  (dy-request /hand `request:http`[%'GET' p.bil ~ ~])
           %te  (dy-wool-poke p.bil q.bil)
-          %ex  (dy-mere p.bil)
+          %xx  (dy-mere p.bil)
+          %ex  dy-mere-self-poke
           %dv  (dy-sing hand+q.bil %a p.bil (snoc q.bil %hoon))
           %ge  (dy-run-generator (dy-cage p.p.p.bil) q.p.bil)
           %sa
@@ -1003,6 +1020,7 @@
     ::
     ++  dy-mere
       |=  =hoon
+      ~&  %dojo^%dy-mere
       =/  res  (dy-eval hoon)
       ?:  ?=(%| -.res)
         (he-diff(poy ~) %tan leaf+"dojo: hoon expression failed" p.res)
@@ -1172,6 +1190,20 @@
     ::
         %kick  +>.$
     ==
+  ::
+  ++  he-mere
+    |=  [way=wire cit=sign:agent:gall]
+    ^+  +>
+    ?.  ?=(%poke-ack -.cit)
+      ~&  [%strange-unto cit]
+      :: +>
+      ?>  ?=(^ poy)
+      (~(dy-hand dy u.poy(pux ~)) mark q.cage.cit)
+    ?~  p.cit
+      :: +>
+      ?>  ?=(^ poy)
+      (~(dy-hand dy u.poy(pux ~)) mark q.cage.cit)
+    (he-diff(poy ~) %tan u.p.cit)
   ::  +he-http-response: result from http-client
   ::
   ++  he-http-response
@@ -1694,6 +1726,13 @@
           old  ~
         ==
       [~ state]
+    ::
+        %execute-hoon
+      ::  to be used internally; called from +dy-make %ex
+      ?>  =(src.hid our.hid)
+      =/  [id=sole-id mad=dojo-command]
+        !<([sole-id dojo-command] vase)
+      he-abet:(~(he-plan he hid id ~ (~(got by hoc) id)) mad)
     ==
   ::
   [moves ..on-init]
@@ -1736,6 +1775,7 @@
     ?+  i.t.t.wire  ~|([%dojo-bad-on-agent wire -.sign] !!)
       %poke  (he-unto:he-full t.wire sign)
       %wool  (he-wool:he-full t.wire sign)
+      %mere  (he-mere:he-full t.wire sign)
     ==
   [moves ..on-init]
 ::
@@ -1758,6 +1798,7 @@
 ++  on-fail
   |=  [=term =tang]
   =/  sessions=(list (pair id session))  ~(tap by hoc)
+  ~&  %dojo^%on-fail^(lent sessions)
   |-  ^-  (quip card:agent:gall _..on-init)
   ?~  sessions
     [~ ..on-init]
